@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="69">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>../../../src/Windows_ByteBuffer.h</itemPath>
+      <itemPath>../../../src/Windows_OVERLAPPED.h</itemPath>
+      <itemPath>../../../src/Windows_tls.h</itemPath>
+      <itemPath>../../../src/name_pachler_nio_file_impl_WindowsPathWatchService.h</itemPath>
+      <itemPath>../../../src/name_pachler_nio_file_impl_WindowsPathWatchService_OVERLAPPED.h</itemPath>
+      <itemPath>../../../src/nativelib.h</itemPath>
+      <itemPath>../../../src/windows_include.hpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>../../../src/Windows.cpp</itemPath>
+      <itemPath>../../../src/WindowsPathWatchService.cpp</itemPath>
+      <itemPath>../../../src/Windows_ByteBuffer.cpp</itemPath>
+      <itemPath>../../../src/Windows_OVERLAPPED.cpp</itemPath>
+      <itemPath>../../../src/Windows_tls.cpp</itemPath>
+      <itemPath>../../../src/nativelib.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>../../../src</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Release_32bit" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>MinGW_TDM|MinGW_TDM</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <architecture>1</architecture>
+          <incDir>
+            <pElem>C:/Programme/Java/jdk1.6.0_18/include</pElem>
+            <pElem>C:/Programme/Java/jdk1.6.0_18/include/win32</pElem>
+          </incDir>
+          <commandLine>-mwin32 -mno-cygwin</commandLine>
+          <preprocessorList>
+            <Elem>_WIN32</Elem>
+          </preprocessorList>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <linkerTool>
+          <output>../../../dist/Release/Windows-x86/jpathwatch-native.dll</output>
+          <commandLine>-Wl,--add-stdcall-alias</commandLine>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Debug_32bit" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>MinGW_TDM|MinGW_TDM</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <architecture>1</architecture>
+          <incDir>
+            <pElem>C:/Programme/Java/jdk1.6.0_18/include</pElem>
+            <pElem>C:/Programme/Java/jdk1.6.0_18/include/win32</pElem>
+          </incDir>
+          <commandLine>-mwin32 -mno-cygwin</commandLine>
+          <preprocessorList>
+            <Elem>_WIN32</Elem>
+          </preprocessorList>
+        </ccTool>
+        <linkerTool>
+          <output>../../../dist/Debug/Windows-x86/jpathwatch-native.dll</output>
+          <commandLine>-Wl,--add-stdcall-alias</commandLine>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Release_64bit" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>MinGW_TDM|MinGW_TDM</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <architecture>2</architecture>
+          <incDir>
+            <pElem>C:/Programme/Java/jdk1.6.0_18/include</pElem>
+            <pElem>C:/Programme/Java/jdk1.6.0_18/include/win32</pElem>
+          </incDir>
+          <commandLine>-mwin32 -mno-cygwin</commandLine>
+          <preprocessorList>
+            <Elem>_WIN32</Elem>
+          </preprocessorList>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <linkerTool>
+          <output>../../../dist/Release/Windows-amd64/jpathwatch-native.dll</output>
+          <commandLine>-Wl,--add-stdcall-alias</commandLine>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Debug_64bit" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>MinGW_TDM|MinGW_TDM</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <architecture>2</architecture>
+          <incDir>
+            <pElem>C:/Programme/Java/jdk1.6.0_18/include</pElem>
+            <pElem>C:/Programme/Java/jdk1.6.0_18/include/win32</pElem>
+          </incDir>
+          <commandLine>-mwin32 -mno-cygwin</commandLine>
+          <preprocessorList>
+            <Elem>_WIN32</Elem>
+          </preprocessorList>
+        </ccTool>
+        <linkerTool>
+          <output>../../../dist/Debug/Windows-amd64/jpathwatch-native.dll</output>
+          <commandLine>-Wl,--add-stdcall-alias</commandLine>
+        </linkerTool>
+      </compileType>
+    </conf>
+  </confs>
+</configurationDescriptor>

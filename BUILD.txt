@@ -1,0 +1,89 @@
+How to build jpathwatch
+=======================
+
+Because jpathwatch is partially based on native libraries, building it isn't
+as straight-forward as it is on pure Java projects. Please follow the 
+instructions given here carefully. If you have questions, please post them
+on the jpathwatch forum on SourceForge.
+
+Preconditions
+-------------
+
+* NetBeans IDE (the newest version you can get), with Java SE and C++ support,
+  available from www.netbeans.org
+* For building the native libraries, you'll need an installation of each OS 
+  you want to build the native libs for (Linux, Mac OS X, FreeBSD, Windows).
+* You'll need gcc (GNU C++ compiler). Have a look at
+  http://netbeans.org/community/releases/70/cpp-setup-instructions.html on
+  how to set it up in NetBeans. 
+  On Windows:
+  - you'll NEED to use the TDM GCC distribution of MinGW, available from here:
+    http://tdm-gcc.tdragon.net
+  - You'll also need the make tool from msys, as described in the setup 
+    instructions on the NetBeans site.
+  - Install all tools into their default directories!
+  - Ensure that your tool collection is called MinGW_TDM (typically NetBeans
+    will detect and name it automatically)
+
+Building
+--------
+When you get jpathwatch from SVN and open it in NetBeans, 
+you'll see a number of (nested) projects (note that NetBeans projects are 
+ordinary folders with special files in them). The important ones are:
+
+/jpathwatch 
+    This is the shell project which combines the Java components and the native 
+    libraries into a JAR file. It also contains the test suite
+
+/jpathwatch/jpathwatch-java
+    The jpathwatch java component. This is the core java code that makes up
+    jpathwatch
+
+/jpathwatch/jpathwatch-native/prj/*/jpathwatch-native-*
+    This group of projects build the native libraries for each platform. You'll
+    notice that there is one for each supported operating system. You'll only be
+    able to open and build the ones that match the OS you're running on.
+    Also note that these projects have different build configurations, depending
+    on the platform (on Windows for instance, there are debug and release 
+    configurations for both 32 and 64 bit x86 targets). 
+    Note that by default, only the Release configurations are picked up by the 
+    build process
+
+In a nutshell, when things are set up correctly, building jpathwatch should be 
+as easy as this:
+
+0) Load the /jpathwatch, /jpathwatch-java projects into Netbeans. Also load
+   the native library project for your current OS (e.g. on Linux, load 
+   /jpathwatch/jpathwatch-native/prj/linux/jpathwatch-native-linux)
+1) right-click on jpathwatch-java in the Projects tab and select 
+   'Clean and Build'. This will build the Java code and update the headers
+   that the native library build needs
+2) right-click on jpathwatch-native-<osname> and click 'clean and build'. The
+   native libs for that platform should build now.
+   On Windows:
+   The path to jni.h and friends are hard-coded in the 
+   project, because there appears to be no other way to reference the JDK C 
+   headers generically. So chances are that the build will fail because you use
+   a different directory or JDK version. Fix the include path by right-clicking
+   on the jpathwatch-native project node, click on 'Properties', and select
+   'Build'->'C++ Compiler'->'Include Directories' and correcting the path there.
+3) right-click on the jpathwatch project and click 'clean and build'. This will
+   package the native libraries and the java classes into the jpathwatch JAR file.
+
+If you're developing jpathwatch, repeat steps 1-3 for rebuilds. Changes in
+Java code will normally be picked up by the IDE and won't require rebuilds.
+
+Step 3) will grab all native libraries it can find in 
+/jpathwatch/jpathwatch-native/dist/Release and package them in your JAR. This is
+useful to create cross-platform builds of the library, simply place the native
+libraries built on other OS's here and they will be included (this is how the
+official distro is built, as well)
+
+In case you ask why this is not a one-click build process:
+Because native libraries can only be built on their respective OS, there is no
+way to have hard dependencies between the native library projects and the 
+java projects. 
+
+Hope this helps, otherwise please post on the jpathwatch forum on SourceForge.
+
+   

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="69">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>../../../src/BSD.cpp</itemPath>
+      <itemPath>../../../src/BSD_kevent.cpp</itemPath>
+      <itemPath>../../../src/BSD_kevent.h</itemPath>
+      <itemPath>../../../src/JArgument.cpp</itemPath>
+      <itemPath>../../../src/JArgument.h</itemPath>
+      <itemPath>../../../src/Unix.cpp</itemPath>
+      <itemPath>../../../src/Unix.h</itemPath>
+      <itemPath>../../../src/Unix_timespec.cpp</itemPath>
+      <itemPath>../../../src/Unix_timespec.h</itemPath>
+      <itemPath>../../../src/nativelib.cpp</itemPath>
+      <itemPath>../../../src/nativelib.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>../../../src</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Release" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>5</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>/usr/local/diablo-jdk1.6.0/include/</pElem>
+            <pElem>/usr/local/diablo-jdk1.6.0/include/freebsd</pElem>
+          </incDir>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <linkerTool>
+          <output>../../../dist/${CND_CONF}/FreeBSD-i386/libjpathwatch-native.so</output>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Debug" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>5</platform>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>/usr/local/diablo-jdk1.6.0/include/</pElem>
+            <pElem>/usr/local/diablo-jdk1.6.0/include/freebsd</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>../../../dist/${CND_CONF}/FreeBSD-i386/libjpathwatch-native.so</output>
+        </linkerTool>
+      </compileType>
+    </conf>
+  </confs>
+</configurationDescriptor>
