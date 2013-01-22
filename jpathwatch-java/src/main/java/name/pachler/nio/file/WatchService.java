@@ -25,9 +25,6 @@ package name.pachler.nio.file;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,43 +66,4 @@ public abstract void close()throws IOException;
 public abstract WatchKey poll() throws InterruptedException, ClosedWatchServiceException;
 public abstract WatchKey poll(long timeout, TimeUnit unit) throws InterruptedException, ClosedWatchServiceException;
 public abstract WatchKey take() throws InterruptedException, ClosedWatchServiceException;
-
-
-    /**
-     * Package-protected listener, for thread coordination during tests.
-     */
-    static interface WatchServiceStartListener {
-        void startedWatching(WatchService service);
-    }
-
-    /**
-     * The watch service start listeners.  Implementation note: Consider this as
-     * a thread-safe linked list.
-     */
-    private final Collection<WatchServiceStartListener> listeners = new LinkedBlockingQueue<WatchServiceStartListener>();
-
-    /**
-     * Adds a new watch service start listener.
-     * @param listener the listener
-     */
-    final void registerWatchServiceStartListener(final WatchServiceStartListener listener) {
-        listeners.add(listener);
-    }
-
-    /**
-     * Removes a watch service start listener.
-     * @param listener the listener
-     */
-    final void unregisterWatchServiceStartListener(final WatchServiceStartListener listener) {
-        listeners.remove(listener);
-    }
-
-    /**
-     * Notifies listeners when the watch service begins watching.
-     */
-    protected final void notifyWatchServiceStarted() {
-        for (WatchServiceStartListener listener : listeners) {
-            listener.startedWatching(this);
-        }
-    }
 }

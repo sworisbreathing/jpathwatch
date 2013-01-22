@@ -469,9 +469,6 @@ public class WindowsPathWatchService extends PathWatchService {
 								// indicate that we processed the command
 								commandResultQueue.put(success);
 								done = true;
-                                                                if (Command.TYPE_ADD_WATCHRECORD==cmd.getType()) {
-                                                                    notifyWatchServiceStarted();
-                                                                }
 							} catch (InterruptedException ex) {
 								Logger.getLogger(WindowsPathWatchService.class.getName()).log(Level.SEVERE, null, ex);
 							}
