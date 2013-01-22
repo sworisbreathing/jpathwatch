@@ -43,6 +43,7 @@
     </properties>
     <build>
         <plugins>
+            <!-- Generate JNI headers when compiling. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>native-maven-plugin</artifactId>
