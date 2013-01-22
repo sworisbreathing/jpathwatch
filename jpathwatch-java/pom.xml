@@ -58,7 +58,7 @@
                         <javahClassName>name.pachler.nio.file.impl.BSD$kevent</javahClassName>
                         <javahClassName>name.pachler.nio.file.impl.Windows</javahClassName>
                         <javahClassName>name.pachler.nio.file.impl.Windows$OVERLAPPED</javahClassName>
-                        <javahClassName>name.pachler.nio.file.impl.Windows$BytePuffer</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.Windows$ByteBuffer</javahClassName>
                         <javahClassName>name.pachler.nio.file.impl.WindowsPathWatchService</javahClassName>
                     </javahClassNames>
                 </configuration>
