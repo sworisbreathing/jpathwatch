@@ -46,6 +46,9 @@ build: .build-post
 
 .build-post: .build-impl
 # Add your post 'build' code here...
+# push the new binaries into the OSGi bundle's resources directory
+#"${CP} ${CND_ARTIFACT_PATH_Release_x86-32bit} ${CND_BASEDIR}/../jpathwatch-bundle/src/main/resources/GNU-Linux-x86/"
+#"${CP} ${CND_ARTIFACT_PATH_Release_x86-64bit} ${CND_BASEDIR}/../jpathwatch-bundle/src/main/resources/GNU-Linux-x86_64/"
 
 # clean
 clean: .clean-post

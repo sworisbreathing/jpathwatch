@@ -59,7 +59,8 @@ build: .build-post
 
 .build-post: .build-impl
 # Add your post 'build' code here...
-
+# push the new binaries into the OSGi bundle's resources directory
+#"${CP} ${CND_ARTIFACT_PATH_Release} ${CND_BASEDIR}/../jpathwatch-bundle/src/main/resources/FreeBSD-i386/"
 
 # clean
 clean: .clean-post

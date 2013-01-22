@@ -59,6 +59,12 @@ build: .build-post
 
 .build-post: .build-impl
 # Add your post 'build' code here...
+# push the new binaries into the OSGi bundle's resources directory
+#"${CP} ${CND_ARTIFACT_PATH_Release_32bit} ${CND_BASEDIR}/../jpathwatch-bundle/src/main/resources/GNU-MacOSX/"
+#"${CP} ${CND_ARTIFACT_PATH_Release_64bit} ${CND_BASEDIR}/../jpathwatch-bundle/src/main/resources/GNU-MacOSX/"
+#"${CP} ${CND_ARTIFACT_PATH_Release_ppc-32bit} ${CND_BASEDIR}/../jpathwatch-bundle/src/main/resources/GNU-MacOSX/"
+#"${CP} ${CND_ARTIFACT_PATH_Release_ppc-64bit} ${CND_BASEDIR}/../jpathwatch-bundle/src/main/resources/GNU-MacOSX/"
+
 
 
 # clean
