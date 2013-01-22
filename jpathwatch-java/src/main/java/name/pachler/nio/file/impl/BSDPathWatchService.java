@@ -69,21 +69,26 @@ public class BSDPathWatchService extends PathWatchService{
 	private static final long DEFAULT_POLLING_INTERVAL_MILLIS = 2000;	// 2 seconds
 	private long pollingIntervalMillis = DEFAULT_POLLING_INTERVAL_MILLIS;
 	private int numKeysRequiringPolling;
+        private volatile boolean initialized;
 
-
-	public BSDPathWatchService() throws IOException {
+	public BSDPathWatchService() {
 		try {
 			String propertyValue = System.getProperty("name.pachler.io.file.BSDPathWatchService.pollingIntervalMillis", Long.toString(DEFAULT_POLLING_INTERVAL_MILLIS));
 			pollingIntervalMillis = Long.parseLong(propertyValue);
 		}catch(Throwable t){
 			// ignore, pllingIntervalMillis will still have its default value.
 		}
-                open();
+                initialized = false;
 	}
 
 	@Override
 	public synchronized PathWatchKey register(Path path, Kind<?>[] kinds, Modifier[] modifiers) throws IOException {
-		PathImpl pathImpl = checkAndCastToPathImpl(path);
+
+                if (!initialized) {
+                    open();
+                }
+
+                PathImpl pathImpl = checkAndCastToPathImpl(path);
 
 		int flags = makeFlagMask(kinds, modifiers);
 
@@ -182,6 +187,7 @@ public class BSDPathWatchService extends PathWatchService{
 			// clear request
 			int nread = read(closePipeReadFd, b, 1);
 			assert(nread == 1);
+                        initialized = false;
 		}
 	}
 
@@ -239,10 +245,25 @@ public class BSDPathWatchService extends PathWatchService{
 
 	private synchronized void open() throws IOException {
 		kqueuefd = kqueue();
+                if (kqueuefd==-1) {
+                    throw new IOException("Error opening kqueue: " + strerror(errno()));
+                }
 		int[] pipefd = new int[2];
 		int pipeResult = pipe(pipefd);
+
+                if (pipeResult == -1) {
+                    /*
+                     * Failed to initialize.  Close the queue.
+                     */
+                    BSD.close(kqueuefd);
+                    kqueuefd = -1;
+                    throw new IOException("Error opening pipe: " + strerror(errno()));
+                }
+
 		closePipeReadFd = pipefd[0];
 		closePipeWriteFd = pipefd[1];
+
+                initialized = true;
 	}
 
 	@Override
