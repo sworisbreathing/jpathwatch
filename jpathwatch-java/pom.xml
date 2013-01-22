@@ -61,6 +61,13 @@
                         <javahClassName>name.pachler.nio.file.impl.Windows$ByteBuffer</javahClassName>
                         <javahClassName>name.pachler.nio.file.impl.WindowsPathWatchService</javahClassName>
                     </javahClassNames>
+                    <!--
+                        Uncomment the following line to drop the headers into
+                        the native project's source directory.
+                    -->
+                    <!--
+                    <javahOutputDirectory>${basedir}/../jpathwatch-native/src</javahOutputDirectory>
+                    -->
                 </configuration>
                 <executions>
                     <execution>
