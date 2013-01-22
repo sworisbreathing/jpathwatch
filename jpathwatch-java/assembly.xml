@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns='http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2'
+    xsi:schemaLocation='http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd'>
+
+    <id>distributable</id>
+
+    <formats>
+        <format>zip</format>
+        <format>tar.gz</format>
+        <format>tar.bz2</format>
+    </formats>
+
+    <!--
+        Include project sources under the "source-projects" folder, but exclude
+        compiled binaries.
+    -->
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/..</directory>
+            <outputDirectory>source-projects</outputDirectory>
+            <excludes>
+                <exclude>**/build/</exclude>
+                <exclude>**/dist/</exclude>
+                <exclude>**/${project.build.directory}/**</exclude>
+                <exclude>**/*.log</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+
+    <!--
+        Include the compiled jar under the root folder.
+    -->
+    <files>
+        <file>
+            <source>${project.build.directory}/${project.build.finalName}.jar</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+    </files>
+</assembly>
