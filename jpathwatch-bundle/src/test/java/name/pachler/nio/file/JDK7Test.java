@@ -40,7 +40,6 @@ import name.pachler.nio.file.ext.Bootstrapper;
 import name.pachler.nio.file.ext.ExtendedWatchEventModifier;
 import name.pachler.nio.file.impl.PollingPathWatchService;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static name.pachler.nio.file.StandardWatchEventKind.*;
@@ -931,7 +930,6 @@ public class JDK7Test {
 
 
 	@Test
-        @Ignore("Not 100% reproducible")
 	public synchronized void testOverflow() throws IOException, InterruptedException{
 		// won't perform test for poller fallback; it has an unlimited
 		// queue and will therefore never report overflow...
@@ -942,8 +940,10 @@ public class JDK7Test {
 		// all we can do is to poll (at least when know when to poll, so it's
 		// better than nothing).
 		// But this means there cannot be overflow.
+                // This cannot reliably be reproduced in Windows.  However,
+                // we still get overflow during testRecursiveWatch on Windows.
 		String osname = System.getProperty("os.name");
-		if(osname.contains("Mac OS X") || osname.contains("FreeBSD"))
+		if(osname.contains("Mac OS X") || osname.contains("FreeBSD") || osname.contains("Windows"))
 			return;
 
 		// aim to provoke overflow event by giving this thread maximum priority
