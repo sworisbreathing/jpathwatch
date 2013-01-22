@@ -41,4 +41,36 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>1.0-alpha-7</version>
+                <configuration>
+                    <javahClassNames>
+                        <javahClassName>name.pachler.nio.file.impl.Unix</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.Unix$timespec</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.Linux</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.LinuxPathWatchService</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.BSD</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.BSD$kevent</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.Windows</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.Windows$OVERLAPPED</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.Windows$BytePuffer</javahClassName>
+                        <javahClassName>name.pachler.nio.file.impl.WindowsPathWatchService</javahClassName>
+                    </javahClassNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-jni-headers</id>
+                        <goals>
+                            <goal>javah</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
