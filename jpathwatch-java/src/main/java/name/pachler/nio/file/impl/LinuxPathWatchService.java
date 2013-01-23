@@ -118,7 +118,7 @@ public class LinuxPathWatchService extends PathWatchService
 
 	private native int translateInotifyEvents(byte[] buffer, int bufferPos, int bufferSize);
 
-	private synchronized void inotifyEventHandler(int wd, int mask, int cookie, String name){		
+	private synchronized void inotifyEventHandler(int wd, int mask, int cookie, String name){
 		LinuxPathWatchKey key = keys.get(wd);
 
 		if(key == null){
@@ -154,7 +154,7 @@ public class LinuxPathWatchService extends PathWatchService
 		Path path = null;
 		if(name != null)
 			path = new PathImpl(new File(name));
-		
+
 		int flags = key.getFlags();
 
 		boolean eventsAdded = false;
@@ -377,7 +377,33 @@ public class LinuxPathWatchService extends PathWatchService
 
 	@Override
 	public synchronized PathWatchKey register(Path path, WatchEvent.Kind<?>[] kinds, WatchEvent.Modifier[] modifiers) throws IOException {
-		if(inotifyFd == -1)
+		Logger logger = Logger.getLogger(getClass().getName());
+                if (logger.isLoggable(Level.FINEST)) {
+                    StringBuilder sb = new StringBuilder("register path \"{0}\", kinds '{' ");
+                    Object[] args = new Object[1+kinds.length+modifiers.length];
+                    args[0] = path;
+                    int index = 1;
+                    for (int kindIndex=0;kindIndex<kinds.length;kindIndex++) {
+                        if (kindIndex>0) {
+                            sb.append(", ");
+                        }
+                        sb.append("{").append(index).append("}");
+                        args[index] = kinds[kindIndex];
+                        index++;
+                    }
+                    sb.append(" '}', modifiers '{' ");
+                    for (int modifierIndex=0;modifierIndex<modifiers.length;modifierIndex++) {
+                        if (modifierIndex>0) {
+                            sb.append(", ");
+                        }
+                        sb.append("{").append(index).append("}");
+                        args[index]=modifiers[modifierIndex];
+                        index++;
+                    }
+                    sb.append(" '}'");
+                    logger.log(Level.FINEST, sb.toString(), args);
+                }
+                if(inotifyFd == -1)
 			throw new ClosedWatchServiceException();
 
 		PathImpl pathImpl = checkAndCastToPathImpl(path);

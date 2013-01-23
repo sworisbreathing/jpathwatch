@@ -6,7 +6,7 @@
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
  * published by the Free Software Foundation. This particular file is
- * subject to the "Classpath" exception as provided in the LICENSE file 
+ * subject to the "Classpath" exception as provided in the LICENSE file
  * that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
@@ -26,6 +26,7 @@ package name.pachler.nio.file.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import name.pachler.nio.file.WatchEvent.Kind;
@@ -39,6 +40,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import name.pachler.nio.file.impl.Windows;
 import name.pachler.nio.file.impl.Windows.ByteBuffer;
+import name.pachler.nio.file.test.logging.TestHandler;
 
 /**
  *
@@ -52,12 +54,24 @@ public class WindowsTest {
     public WindowsTest() {
     }
 
+        private static Level originalLevel = null;
+
+        private static Handler loggingHandler = null;
+
 	@BeforeClass
 	public static void setUpClass() throws Exception {
+            originalLevel = Logger.getLogger("").getLevel();
+            Logger.getLogger("").setLevel(Level.ALL);
+            loggingHandler = new TestHandler();
+            Logger.getLogger("").addHandler(loggingHandler);
 	}
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
+            Logger.getLogger("").setLevel(originalLevel);
+            originalLevel = null;
+            Logger.getLogger("").removeHandler(loggingHandler);
+            loggingHandler = null;
 	}
 
     @Before

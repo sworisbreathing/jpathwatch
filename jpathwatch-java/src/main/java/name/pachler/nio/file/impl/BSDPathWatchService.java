@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import name.pachler.nio.file.ClosedWatchServiceException;
 import name.pachler.nio.file.Path;
 import name.pachler.nio.file.WatchEvent.Kind;
@@ -69,23 +71,44 @@ public class BSDPathWatchService extends PathWatchService{
 	private static final long DEFAULT_POLLING_INTERVAL_MILLIS = 2000;	// 2 seconds
 	private long pollingIntervalMillis = DEFAULT_POLLING_INTERVAL_MILLIS;
 	private int numKeysRequiringPolling;
-        private volatile boolean initialized;
 
-	public BSDPathWatchService() {
+	public BSDPathWatchService() throws IOException {
 		try {
 			String propertyValue = System.getProperty("name.pachler.io.file.BSDPathWatchService.pollingIntervalMillis", Long.toString(DEFAULT_POLLING_INTERVAL_MILLIS));
 			pollingIntervalMillis = Long.parseLong(propertyValue);
 		}catch(Throwable t){
 			// ignore, pllingIntervalMillis will still have its default value.
 		}
-                initialized = false;
+                open();
 	}
 
 	@Override
 	public synchronized PathWatchKey register(Path path, Kind<?>[] kinds, Modifier[] modifiers) throws IOException {
-
-                if (!initialized) {
-                    open();
+                Logger logger = Logger.getLogger(getClass().getName());
+                if (logger.isLoggable(Level.FINEST)) {
+                    StringBuilder sb = new StringBuilder("register path \"{0}\", kinds '{' ");
+                    Object[] args = new Object[1+kinds.length+modifiers.length];
+                    args[0] = path;
+                    int index = 1;
+                    for (int kindIndex=0;kindIndex<kinds.length;kindIndex++) {
+                        if (kindIndex>0) {
+                            sb.append(", ");
+                        }
+                        sb.append("{").append(index).append("}");
+                        args[index] = kinds[kindIndex];
+                        index++;
+                    }
+                    sb.append(" '}', modifiers '{' ");
+                    for (int modifierIndex=0;modifierIndex<modifiers.length;modifierIndex++) {
+                        if (modifierIndex>0) {
+                            sb.append(", ");
+                        }
+                        sb.append("{").append(index).append("}");
+                        args[index]=modifiers[modifierIndex];
+                        index++;
+                    }
+                    sb.append(" '}'");
+                    logger.log(Level.FINEST, sb.toString(), args);
                 }
 
                 PathImpl pathImpl = checkAndCastToPathImpl(path);
@@ -187,7 +210,6 @@ public class BSDPathWatchService extends PathWatchService{
 			// clear request
 			int nread = read(closePipeReadFd, b, 1);
 			assert(nread == 1);
-                        initialized = false;
 		}
 	}
 
@@ -262,8 +284,6 @@ public class BSDPathWatchService extends PathWatchService{
 
 		closePipeReadFd = pipefd[0];
 		closePipeWriteFd = pipefd[1];
-
-                initialized = true;
 	}
 
 	@Override

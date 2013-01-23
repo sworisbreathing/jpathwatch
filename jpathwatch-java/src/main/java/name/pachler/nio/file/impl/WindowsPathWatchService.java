@@ -73,32 +73,44 @@ public class WindowsPathWatchService extends PathWatchService {
 	private void FILE_NOTIFY_INFORMATIONhandler(WatchRecord wr, int action, String fileName){
 		int flags = wr.getFlags();
 		WatchEvent.Kind<Path> kind = null;
+                Logger logger = Logger.getLogger(getClass().getName());
 		switch(action){
 			case FILE_ACTION_RENAMED_NEW_NAME:
 				if(0 != (flags & FLAG_FILTER_ENTRY_RENAME_TO))
 				{
 					kind = ExtendedWatchEventKind.ENTRY_RENAME_TO;
+                                        logger.log(Level.FINE, "Rename To \"{0}\"", fileName);
 					break;
 				}
 				// intentional fallthrough
 			case FILE_ACTION_ADDED:
 				if(0 != (flags & FLAG_FILTER_ENTRY_CREATE))
+                                {
 					kind = StandardWatchEventKind.ENTRY_CREATE;
+                                        logger.log(Level.FINE, "Create \"{0}\"", fileName);
+                                }
 				break;
 			case FILE_ACTION_RENAMED_OLD_NAME:
 				if(0 != (flags & FLAG_FILTER_ENTRY_RENAME_FROM))
 				{
 					kind = ExtendedWatchEventKind.ENTRY_RENAME_FROM;
+                                        logger.log(Level.FINE, "Rename From \"{0}\"", fileName);
 					break;
 				}
 				// intentional fallthrough
 			case FILE_ACTION_REMOVED:
 				if(0 != (flags & FLAG_FILTER_ENTRY_DELETE))
+                                {
 					kind = StandardWatchEventKind.ENTRY_DELETE;
+                                        logger.log(Level.FINE, "Delete \"{0}\"", fileName);
+                                }
 				break;
 			case FILE_ACTION_MODIFIED:
 				if(0 != (flags & FLAG_FILTER_ENTRY_MODIFY))
+                                {
 					kind = StandardWatchEventKind.ENTRY_MODIFY;
+                                        logger.log(Level.FINE, "Modify \"{0}\"", fileName);
+                                }
 				break;
 		}
 
@@ -215,7 +227,33 @@ public class WindowsPathWatchService extends PathWatchService {
 
 	@Override
 	public synchronized PathWatchKey register(Path path, Kind<?>[] kinds, Modifier[] modifiers) throws IOException {
-		PathImpl pathImpl;
+		Logger logger = Logger.getLogger(getClass().getName());
+                if (logger.isLoggable(Level.FINEST)) {
+                    StringBuilder sb = new StringBuilder("register path \"{0}\", kinds '{' ");
+                    Object[] args = new Object[1+kinds.length+modifiers.length];
+                    args[0] = path;
+                    int index = 1;
+                    for (int kindIndex=0;kindIndex<kinds.length;kindIndex++) {
+                        if (kindIndex>0) {
+                            sb.append(", ");
+                        }
+                        sb.append("{").append(index).append("}");
+                        args[index] = kinds[kindIndex];
+                        index++;
+                    }
+                    sb.append(" '}', modifiers '{' ");
+                    for (int modifierIndex=0;modifierIndex<modifiers.length;modifierIndex++) {
+                        if (modifierIndex>0) {
+                            sb.append(", ");
+                        }
+                        sb.append("{").append(index).append("}");
+                        args[index]=modifiers[modifierIndex];
+                        index++;
+                    }
+                    sb.append(" '}'");
+                    logger.log(Level.FINEST, sb.toString(), args);
+                }
+                PathImpl pathImpl;
 		try {
 			pathImpl = (PathImpl)path;
 		}catch(ClassCastException ccx){
@@ -403,6 +441,7 @@ public class WindowsPathWatchService extends PathWatchService {
 					boolean success = false;
 					WatchRecord watchRecord = null;
 					assert(cmd != null);
+                                        Logger logger = Logger.getLogger(getClass().getName());
 					try {
 						switch(cmd.getType()){
 							case Command.TYPE_SHUTDOWN:
@@ -415,6 +454,7 @@ public class WindowsPathWatchService extends PathWatchService {
 								CloseHandle(signallingEvent);
 								signallingEvent = 0;
 								success = true;
+                                                                logger.log(Level.FINE, "Command: Shutdown, Flags: {0}", cmd.getFlags());
 								return;
 							case Command.TYPE_ADD_WATCHRECORD:{
 								watchRecord = cmd.getWatchRecord();
@@ -422,6 +462,7 @@ public class WindowsPathWatchService extends PathWatchService {
 								pathToWatchRecordMap.put(watchRecord.getPath(), watchRecord);
 
 								success = ReadDirectoryChanges(watchRecord.handle, watchRecord.buffer, watchRecord.getWatchSubtree(), watchRecord.getNotifyFilter(), null, watchRecord.overlapped, null);
+                                                                logger.log(Level.FINE, "Command: AddWatchRecord, Flags: {0}", cmd.getFlags());
 							}	break;
 							case Command.TYPE_MODIFY_WATCHRECORD:{
 								// on modification, re-issue read operation for watch record
@@ -447,12 +488,13 @@ public class WindowsPathWatchService extends PathWatchService {
 
 								if(success)
 									success = ReadDirectoryChanges(watchRecord.handle, watchRecord.buffer, watchRecord.getWatchSubtree(), watchRecord.getNotifyFilter(), null, watchRecord.overlapped, null);
-
+                                                                logger.log(Level.FINE, "Command: ModifyWatchRecord, Flags: {0}", cmd.getFlags());
 							}	break;
 							case Command.TYPE_REMOVE_WATCHRECORD:{
 								watchRecord = cmd.getWatchRecord();
 								cancelImpl(watchRecord);
 								success = true;
+                                                                logger.log(Level.FINE, "Command: RemoveWatchRecord, Flags: {0}", cmd.getFlags());
 							}	break;
 							default:
 								throw new RuntimeException("unhandled command type");

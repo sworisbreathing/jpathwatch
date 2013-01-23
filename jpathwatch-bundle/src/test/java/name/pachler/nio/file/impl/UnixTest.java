@@ -26,8 +26,14 @@ package name.pachler.nio.file.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import name.pachler.nio.file.test.logging.TestHandler;
+import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 /**
  *
@@ -37,6 +43,27 @@ public class UnixTest {
 	static boolean isUnix(){
 		return LinuxTest.isLinux() || BSDTest.isBSD() || SolarisTest.isSolaris();
 	}
+
+        private static Level originalLevel = null;
+
+        private static Handler loggingHandler = null;
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+            originalLevel = Logger.getLogger("").getLevel();
+            Logger.getLogger("").setLevel(Level.ALL);
+            loggingHandler = new TestHandler();
+            Logger.getLogger("").addHandler(loggingHandler);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+            Logger.getLogger("").setLevel(originalLevel);
+            originalLevel = null;
+            Logger.getLogger("").removeHandler(loggingHandler);
+            loggingHandler = null;
+	}
+
 	@Test(expected=java.lang.NullPointerException.class)
 	public void testStat_FirstParamNull(){
 		if(!isUnix())
@@ -89,7 +116,7 @@ public class UnixTest {
 	public void testSymlink() throws IOException{
 		if(!isUnix())
 			return;
-		
+
 		File f = File.createTempFile("testSymlink", ".test");
 		File d = new File(f.getParentFile(), f.getName()+".dir");
 		d.mkdir();

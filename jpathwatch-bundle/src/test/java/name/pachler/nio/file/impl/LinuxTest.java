@@ -25,8 +25,14 @@ package name.pachler.nio.file.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import name.pachler.nio.file.test.logging.TestHandler;
+import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 /**
  *
@@ -36,6 +42,26 @@ public class LinuxTest {
 	static {
 
 	}
+        private static Level originalLevel = null;
+
+        private static Handler loggingHandler = null;
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+            originalLevel = Logger.getLogger("").getLevel();
+            Logger.getLogger("").setLevel(Level.ALL);
+            loggingHandler = new TestHandler();
+            Logger.getLogger("").addHandler(loggingHandler);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+            Logger.getLogger("").setLevel(originalLevel);
+            originalLevel = null;
+            Logger.getLogger("").removeHandler(loggingHandler);
+            loggingHandler = null;
+	}
+
 	public static boolean isLinux(){
 		String osName = System.getProperty("os.name");
 		return osName.toLowerCase().contains("linux");
@@ -45,7 +71,7 @@ public class LinuxTest {
 	public synchronized void testInotify() throws IOException, InterruptedException{
 		if(!isLinux())
 			return;
-		
+
 		int ifd = Linux.inotify_init();
 		assertFalse(ifd == -1);
 

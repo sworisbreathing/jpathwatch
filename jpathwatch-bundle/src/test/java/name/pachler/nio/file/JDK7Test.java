@@ -32,6 +32,7 @@ import name.pachler.nio.file.StandardWatchEventKind;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 import name.pachler.nio.file.ClosedWatchServiceException;
 import name.pachler.nio.file.FileSystems;
 import name.pachler.nio.file.Path;
@@ -44,6 +45,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static name.pachler.nio.file.StandardWatchEventKind.*;
 import static name.pachler.nio.file.ext.ExtendedWatchEventKind.*;
+import name.pachler.nio.file.test.logging.TestHandler;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 public class JDK7Test {
 
@@ -56,6 +60,26 @@ public class JDK7Test {
 		Bootstrapper.setDefaultPollingInterval(500);
 	}
 */
+        private static Level originalLevel = null;
+
+        private static Handler loggingHandler = null;
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+            originalLevel = Logger.getLogger("").getLevel();
+            Logger.getLogger("").setLevel(Level.ALL);
+            loggingHandler = new TestHandler();
+            Logger.getLogger("").addHandler(loggingHandler);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+            Logger.getLogger("").setLevel(originalLevel);
+            originalLevel = null;
+            Logger.getLogger("").removeHandler(loggingHandler);
+            loggingHandler = null;
+	}
+
 	static class SingleWatchKeyTaker extends Thread{
 		WatchService watcher;
 		WatchKey watchKey;

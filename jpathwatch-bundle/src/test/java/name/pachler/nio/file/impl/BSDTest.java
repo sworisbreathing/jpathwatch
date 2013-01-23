@@ -23,7 +23,11 @@
 
 package name.pachler.nio.file.impl;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import name.pachler.nio.file.impl.BSD.kevent;
+import name.pachler.nio.file.test.logging.TestHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,13 +44,25 @@ public class BSDTest {
     public BSDTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+   private static Level originalLevel = null;
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+        private static Handler loggingHandler = null;
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+            originalLevel = Logger.getLogger("").getLevel();
+            Logger.getLogger("").setLevel(Level.ALL);
+            loggingHandler = new TestHandler();
+            Logger.getLogger("").addHandler(loggingHandler);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+            Logger.getLogger("").setLevel(originalLevel);
+            originalLevel = null;
+            Logger.getLogger("").removeHandler(loggingHandler);
+            loggingHandler = null;
+	}
 
     @Before
     public void setUp() {
@@ -120,17 +136,17 @@ public class BSDTest {
 
 		// error cases. First, provide all null arguments
 		{
-			
+
 			// no changes and no reading should return 0
 			result = BSD.kevent(kq, null, null, null);
 			assertEquals(0, result);
-			
+
 			// an invalid descriptor should reaturn EBADF
 			result = BSD.kevent(-1, null, null, null);
 			assertEquals(-1, result);
 			assertEquals(BSD.errno(), BSD.EBADF);
-						
-			// an invalid descriptor, but this time with an event list - 
+
+			// an invalid descriptor, but this time with an event list -
 			// should read 1 event that is an error
 /*			{
 				kevent c = new kevent();
@@ -151,7 +167,7 @@ System.out.println(BSD.strerror(BSD.errno()));
 				assertEquals(data, BSD.EINVAL);
 			}
 */
-			
+
 			// no changes and no reading - should return 0
 			result = BSD.kevent(kq, null, null, null);
 			assertEquals(0, result);

@@ -23,8 +23,14 @@
 
 package name.pachler.nio.file.impl;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import name.pachler.nio.file.test.logging.TestHandler;
+import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 /**
  *
@@ -33,6 +39,26 @@ import static org.junit.Assert.*;
 public class SolarisTest {
 	static boolean isSolaris(){
 		return System.getProperty("os.name").toLowerCase().contains("solaris");
+	}
+
+        private static Level originalLevel = null;
+
+        private static Handler loggingHandler = null;
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+            originalLevel = Logger.getLogger("").getLevel();
+            Logger.getLogger("").setLevel(Level.ALL);
+            loggingHandler = new TestHandler();
+            Logger.getLogger("").addHandler(loggingHandler);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+            Logger.getLogger("").setLevel(originalLevel);
+            originalLevel = null;
+            Logger.getLogger("").removeHandler(loggingHandler);
+            loggingHandler = null;
 	}
 
 	@Test
