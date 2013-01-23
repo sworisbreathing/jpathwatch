@@ -140,7 +140,7 @@ public class BSDPathWatchService extends PathWatchService{
 			if(key == null){
 				// no directory file fd registered - we'll need to open
 				// one now
-
+                                logger.log(Level.FINEST, "Registering new key for path \"{0}\"", pathname);
 				// create file descriptor and watch event first
 				boolean success = false;
 				int dirfd = -1;

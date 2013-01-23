@@ -26,6 +26,8 @@ package name.pachler.nio.file.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import name.pachler.nio.file.Path;
 import name.pachler.nio.file.StandardWatchEventKind;
 
@@ -73,7 +75,7 @@ class PollingPathWatchKey extends PathWatchKey{
 	void readModtimesAndLengths(String[] entryList, long[] modtimes, long[] lengths, boolean deleteRemovedEntries){
 		PathImpl pathImpl = (PathImpl)getPath();
 		File parentDirectory = pathImpl.getFile();
-		
+
 		for(int i=0; i<entryList.length; ++i){
 			File file = new File(parentDirectory, entryList[i]);
 			long modtime = file.lastModified();
@@ -84,14 +86,14 @@ class PollingPathWatchKey extends PathWatchKey{
 				// if we can't get the modtime, something's
 				//wrong with the file, so we assume it's been removed and
 				// clear the corresponding entry in the fileList.
-				entryList[i] = null;	
+				entryList[i] = null;
 			} else {
 				modtimes[i] = modtime;
 				lengths[i] = length;
 			}
 		}
 	}
-	
+
 	@Override
 	public synchronized void setFlags(int flags){
 		int oldModifyFlag = getFlags() & PathWatchService.FLAG_FILTER_ENTRY_MODIFY;
@@ -137,7 +139,7 @@ class PollingPathWatchKey extends PathWatchKey{
 		// read current file name state in watched directory and
 		// create sorted list of the new state (newFileNames)
 		String[] newFileNames = makeDirectoryEntryList();
-		
+
 		long[] newLastModifieds = null;
 		long[] newLengths = null;
 		if((flags & PathWatchService.FLAG_FILTER_ENTRY_MODIFY) != 0)
@@ -210,6 +212,7 @@ class PollingPathWatchKey extends PathWatchKey{
 					Path p = new PathImpl(new File(oldName));
 					PathWatchEvent e = new PathWatchEvent(StandardWatchEventKind.ENTRY_DELETE, p, 1);
 					addWatchEvent(e);
+                                        Logger.getLogger(getClass().getName()).log(Level.FINE, "Deleted \"{0}\"", p);
 				}
 				++oldIndex;
 			} else if(comparison > 0){
@@ -219,6 +222,7 @@ class PollingPathWatchKey extends PathWatchKey{
 					Path p = new PathImpl(new File(newName));
 					PathWatchEvent e = new PathWatchEvent(StandardWatchEventKind.ENTRY_CREATE, p, 1);
 					addWatchEvent(e);
+                                        Logger.getLogger(getClass().getName()).log(Level.FINE, "Created \"{0}\"", p);
 				}
 				// also check if the size is > 0, which indicates that it
 				// was written to as well after it has been created - so we
@@ -229,6 +233,7 @@ class PollingPathWatchKey extends PathWatchKey{
 						Path p = new PathImpl(new File(newName));
 						PathWatchEvent e = new PathWatchEvent(StandardWatchEventKind.ENTRY_MODIFY, p, 1);
 						addWatchEvent(e);
+                                                Logger.getLogger(getClass().getName()).log(Level.FINE, "Modified \"{0}\"", p);
 					}
 				}
 				++newIndex;
@@ -244,6 +249,7 @@ class PollingPathWatchKey extends PathWatchKey{
 						Path p = new PathImpl(new File(newName));
 						PathWatchEvent e = new PathWatchEvent(StandardWatchEventKind.ENTRY_MODIFY, p, 1);
 						addWatchEvent(e);
+                                                Logger.getLogger(getClass().getName()).log(Level.FINE, "Modified \"{0}\"", p);
 					}
 				}
 				// equal, there's nothing to do here. Advance on both lists
@@ -256,7 +262,7 @@ class PollingPathWatchKey extends PathWatchKey{
 		fileNames = newFileNames;
 		lastModifieds = newLastModifieds;
 		lengths = newLengths;
-		
+
 		int queuedEventsAfter = getNumQueuedEvents();
 		return queuedEventsBefore < queuedEventsAfter;
 	}
