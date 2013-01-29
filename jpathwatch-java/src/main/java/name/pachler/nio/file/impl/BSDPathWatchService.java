@@ -147,7 +147,7 @@ public class BSDPathWatchService extends PathWatchService{
 				try {
 					dirfd = BSD.open(pathname, BSD.O_RDONLY, 0);
 					if(dirfd == -1)
-						throw new IOException("error registering the path with the native OS: " + strerror(errno()));
+						throw new IOException("error registering the path \"" + pathname + "\" with the native OS: " + strerror(errno()));
 					kevent e = new kevent();
 					e.set_ident(dirfd);
 					e.set_filter(EVFILT_VNODE);
@@ -156,7 +156,7 @@ public class BSDPathWatchService extends PathWatchService{
 					int result = kevent(kqueuefd, new kevent[]{e}, null, null);
 					// do we need more specific error handling here?
 					if(result != 0)
-						throw new IOException("error registering the path with the native OS: " + strerror(errno()));
+						throw new IOException("error registering the path \"" + pathname + "\" with the native OS: " + strerror(errno()));
 
 					// create watch key and add it to the key and dirs maps
 					key = new PollingPathWatchKey(this, path, 0);
