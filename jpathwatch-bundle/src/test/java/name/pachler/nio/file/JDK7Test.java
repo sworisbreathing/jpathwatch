@@ -937,15 +937,11 @@ public class JDK7Test {
 
 	@Test
 	public void testWatchNonAsciiPath() throws IOException{
-                String osname = System.getProperty("os.name");
-                if (osname.contains("Mac OS X")) {
-                    return;
-                }
 		File parent = createTempDir("testManyDirectories");
 
 		WatchService ws = FileSystems.getDefault().newWatchService();
 
-		File unicodeFile = new File(parent, "test\u00e0eb");
+		File unicodeFile = new File(parent, "test\u001feb");
 		unicodeFile.mkdir();
 
 		Path path = Paths.get(unicodeFile.getAbsolutePath());
