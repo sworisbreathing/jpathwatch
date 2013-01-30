@@ -937,7 +937,7 @@ public class JDK7Test {
 
 	@Test
 	public void testWatchNonAsciiPath() throws IOException{
-		File parent = createTempDir("testManyDirectories");
+		File parent = createTempDir("testWatchNonAsciiPath");
 
 		WatchService ws = FileSystems.getDefault().newWatchService();
 
