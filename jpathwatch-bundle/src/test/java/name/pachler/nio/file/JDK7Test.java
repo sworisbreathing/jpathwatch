@@ -807,7 +807,7 @@ public class JDK7Test {
 			// through the kernel (100ms is very generous here)
 
 		// get key with events
-		WatchKey k = service.poll();
+		WatchKey k = service.poll(1, TimeUnit.SECONDS);
 
 		// we expect an event to be reported by poll().
 		assertNotNull(k);
