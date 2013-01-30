@@ -152,17 +152,22 @@ public class OSGiIT {
     private WatchService watchService;
 
     /**
-     * Gets the Pax Exam configuration for the OSGi tests.
+     * Gets the Pax Exam configuration for the OSGi tests.  This is a slightly
+     * modified default configuration plus our logging system (slf4j/logback),
+     * the junit test bundles for Pax Exam, and the jpathwatch OSGi bundle.
      *
      * @return the Pax Exam configuration to run the tests
      */
     @Configuration
     public Option[] config() {
         return options(
-                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("NONE"),
-                systemProperty("logback.configurationFile").value("file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.groovy"),
-                // copy most options from PaxExamRuntime.defaultTestSystemOptions(),
-                // except RBC and Pax Logging.  This is so we can use slf4j/logback instead of JUL
+                /*
+                 * These are the same options found in
+                 * PaxExamRuntime.defaultTestSystemOptions() except we omit
+                 * Remote Bundle Context (which we don't need, since we are
+                 * launching the OSGi container in the same VM) and Pax Logging
+                 * (which uses java.util.logging).
+                 */
                 bootDelegationPackage("sun.*"),
                 frameworkStartLevel(Constants.START_LEVEL_TEST_BUNDLE),
                 url("link:classpath:META-INF/links/org.ops4j.pax.exam.link").startLevel(Constants.START_LEVEL_SYSTEM_BUNDLES),
@@ -175,15 +180,23 @@ public class OSGiIT {
                 url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.framework.link").startLevel(Constants.START_LEVEL_SYSTEM_BUNDLES),
                 url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.lifecycle.link").startLevel(Constants.START_LEVEL_SYSTEM_BUNDLES),
                 url("link:classpath:META-INF/links/org.apache.geronimo.specs.atinject.link").startLevel(Constants.START_LEVEL_SYSTEM_BUNDLES),
+
+                //Use SLF4J and Logback for logging
                 mavenBundle("org.slf4j", "slf4j-api", "1.7.2").startLevel(Constants.START_LEVEL_SYSTEM_BUNDLES),
                 mavenBundle("org.codehaus.groovy", "groovy-all", "2.0.5").startLevel(Constants.START_LEVEL_SYSTEM_BUNDLES),
                 mavenBundle("ch.qos.logback", "logback-core", "1.0.9").startLevel(Constants.START_LEVEL_SYSTEM_BUNDLES),
                 mavenBundle("ch.qos.logback", "logback-classic", "1.0.9").startLevel(Constants.START_LEVEL_SYSTEM_BUNDLES),
-                mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.2.4"),
-                mavenBundle("org.apache.aries", "org.apache.aries.util", "1.0.0"),
-                mavenBundle("org.apache.aries.proxy", "org.apache.aries.proxy", "1.0.0"),
-                mavenBundle("jpathwatch", "jpathwatch-bundle", "0.96-SNAPSHOT"),
-                junitBundles());
+                systemProperty("logback.configurationFile").value("file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.groovy"),
+
+                // Suppress OSGi container logging (not terribly interesting).
+                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("NONE"),
+
+                //Pax Exam JUnit bundles
+                junitBundles(),
+
+                //jpathwatch OSGi bundle
+                mavenBundle("jpathwatch", "jpathwatch-bundle", "0.96-SNAPSHOT")
+            );
     }
 
     /**
