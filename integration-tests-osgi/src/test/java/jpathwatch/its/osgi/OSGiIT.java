@@ -59,6 +59,16 @@ import org.slf4j.LoggerFactory;
 public class OSGiIT {
 
     /**
+     * The maximum timeout duration used when polling for events.
+     */
+    private static final long EVENT_TIMEOUT_DURATION = 2L;
+
+    /**
+     * The maximum timeout time unit used when polling for events.
+     */
+    private static final TimeUnit EVENT_TIMEOUT_TIMEUNIT = TimeUnit.MINUTES;
+
+    /**
      * Gets the file which was the source of a file system event.
      *
      * @param watchService the watch service
@@ -72,9 +82,9 @@ public class OSGiIT {
      * timeout
      * @throws InterruptedException if the thread is interrupted while polling
      */
-    private static File getEventFile(final WatchService watchService, final Kind kind, final long timeout, final TimeUnit timeUnit, final Path parent) throws TimeoutException, InterruptedException {
+    private static File getEventFile(final WatchService watchService, final Kind kind, final Path parent) throws TimeoutException, InterruptedException {
         File results = null;
-        WatchKey key = watchService.poll(timeout, timeUnit);
+        WatchKey key = watchService.poll(EVENT_TIMEOUT_DURATION, EVENT_TIMEOUT_TIMEUNIT);
         if (key != null) {
             try {
                 List<WatchEvent<?>> events = key.pollEvents();
@@ -200,25 +210,6 @@ public class OSGiIT {
     }
 
     /**
-     * Gets the maximum timeout used when polling for events.
-     *
-     * @return the maximum timeout used when polling for events
-     */
-    protected long eventTimeoutDuration() {
-        return 2L;
-    }
-
-    /**
-     * Gets the time unit for the maximum timeout used when polling for events.
-     *
-     * @return the time unit for the maximum timeout used when polling for
-     * events
-     */
-    protected TimeUnit eventTimeoutTimeUnit() {
-        return TimeUnit.MINUTES;
-    }
-
-    /**
      * Runs the file system monitoring tests in the OSGi container.
      *
      * @throws Throwable if the test fails
@@ -242,7 +233,7 @@ public class OSGiIT {
         newFile.createNewFile();
         newFile.deleteOnExit(); // in case the test fails
         logger.info("Testing for created event.");
-        File created = getEventFile(watchService, StandardWatchEventKind.ENTRY_CREATE, eventTimeoutDuration(), eventTimeoutTimeUnit(), folderPath);
+        File created = getEventFile(watchService, StandardWatchEventKind.ENTRY_CREATE, folderPath);
         assertNotNull(created);
         assertEquals(newFile.getAbsolutePath(), created.getAbsolutePath());
 
@@ -252,7 +243,7 @@ public class OSGiIT {
          */
         logger.info("Testing for modification event.");
         appendBytesToFile(newFile, new byte[4096]);
-        File modified = getEventFile(watchService, StandardWatchEventKind.ENTRY_MODIFY, eventTimeoutDuration(), eventTimeoutTimeUnit(), folderPath);
+        File modified = getEventFile(watchService, StandardWatchEventKind.ENTRY_MODIFY, folderPath);
         assertNotNull(modified);
         assertEquals(newFile.getAbsolutePath(), modified.getAbsolutePath());
 
@@ -262,7 +253,7 @@ public class OSGiIT {
          */
         newFile.delete();
         logger.info("Testing for deletion event.");
-        File deleted = getEventFile(watchService, StandardWatchEventKind.ENTRY_DELETE, eventTimeoutDuration(), eventTimeoutTimeUnit(), folderPath);
+        File deleted = getEventFile(watchService, StandardWatchEventKind.ENTRY_DELETE, folderPath);
         assertNotNull(deleted);
         assertEquals(newFile.getAbsolutePath(), deleted.getAbsolutePath());
     }
