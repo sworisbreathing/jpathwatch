@@ -941,7 +941,7 @@ public class JDK7Test {
 
 		WatchService ws = FileSystems.getDefault().newWatchService();
 
-		File unicodeFile = new File(parent, "test\u001feb");
+		File unicodeFile = new File(parent, "test\u00e0eb");
 		unicodeFile.mkdir();
 
 		Path path = Paths.get(unicodeFile.getAbsolutePath());
