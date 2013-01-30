@@ -58,6 +58,7 @@ import org.slf4j.LoggerFactory;
 @RunWith(JUnit4TestRunner.class)
 public class OSGiIT {
 
+    //<editor-fold defaultstate="collapsed" desc="test helpers">
     /**
      * The maximum timeout duration used when polling for events.
      */
@@ -145,12 +146,9 @@ public class OSGiIT {
             }
         }
     }
+    //</editor-fold>
 
-    /**
-     * The watch service we are testing.
-     */
-    private WatchService watchService;
-
+    //<editor-fold defaultstate="collapsed" desc="Pax Exam configuration">
     /**
      * Gets the Pax Exam configuration for the OSGi tests.  This is a slightly
      * modified default configuration plus our logging system (slf4j/logback),
@@ -198,6 +196,13 @@ public class OSGiIT {
                 mavenBundle("jpathwatch", "jpathwatch-bundle", "0.96-SNAPSHOT")
             );
     }
+    //</editor-fold>
+
+    //<editor-fold desc="JUnit Test Code">
+    /**
+     * The watch service we are testing.
+     */
+    private WatchService watchService;
 
     /**
      * Initializes the watch service before running the tests.
@@ -270,4 +275,5 @@ public class OSGiIT {
         assertNotNull(deleted);
         assertEquals(newFile.getAbsolutePath(), deleted.getAbsolutePath());
     }
+    //</editor-fold>
 }
