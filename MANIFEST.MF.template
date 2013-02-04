@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: 
-
-Name: jpathwatch
-Comment: jpathwatch directory monitoring library
-Implementation-Title: name.pachler.nio.file.jpathwatch
-Implementation-Version: VERSION_MAJOR.VERSION_MINOR
-Implementation-Vendor: Uwe Pachler
-Implementation-URL: http://jpathwatch.wordpress.com
